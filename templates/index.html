@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZAX | Voice Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div id="loading-screen">
+        <div class="loader"></div>
+        <h2>Loading ZAX...</h2>
+    </div>
+
+    <div class="page-wrapper">
+        <header>
+            <h1>
+                <font color="FF2626">Z</font>
+                <font color="FFD523">A</font>
+                <font color="00C1D4">X</font>
+            </h1>
+
+            <!-- Logout Button -->
+            <div class="logout-button">
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </div>
+
+            <!-- Model Toggle -->
+            <div id="model-toggle" style="position: absolute; top: 10px; right: 280px; color: white; font-size: 14px;">
+                <button onclick="toggleModel()" style="padding: 5px 10px; font-size: 13px;">Switch Model</button>
+                <span id="current-model" style="margin-left: 10px;">🟢 Server 1</span>
+                
+                </div>
+                
+                <div id="knowledge-toggle" style="display: inline-block;">
+                    <button id="knowledge-toggle-btn" data-on="false" onclick="toggleKnowledgeMode()">💬 Chat Mode</button>
+            </div>
+                </button>
+            </div>
+        </header>
+
+        <div class="clock">
+            <div class="week">
+                <span>SUN</span><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span>
+            </div>
+            <div class="date">
+                <span id="current-date">Date Here</span>
+            </div>
+            <div class="time">
+                <span id="hour">12</span>:<span id="minute">00</span>
+            </div>
+        </div>
+
+        <main>
+            <section class="chat-container">
+                <div class="chat-header">
+                    <h2><font color="#252A34">Chat with Zax</font></h2>
+                </div>
+
+                <div class="chat-messages">
+                    <ul id="message-list"></ul>
+                </div>
+
+                <div id="thinking" style="display: none; text-align: center; margin: 10px;color: red">
+                    <em id="thinking-text">🤔 Zax is thinking...</em>
+                    <div class="loader"></div>
+                </div>
+
+                <div class="chat-input">
+                    <input type="text" id="user-input" placeholder="Type your message here..." />
+                    <div id="suggestions-container" class="suggestions"></div>
+                    <button id="send-button">Send</button>
+                    <i id="mic-icon" class="fas fa-microphone-slash" style="font-size: 24px;"></i>
+                    <button id="start-button">Tap to Start</button>
+                    <button id="stop-button" style="display: none;">Stop Listening</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
