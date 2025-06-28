@@ -9,7 +9,6 @@ import pyttsx3
 from message_handler import set_mute, get_mute
 # from message_handler import engine
 
-
 # Load environment variables
 load_dotenv()
 
@@ -18,7 +17,7 @@ app.secret_key = 'your_secret_key_here'
 app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
 
-# Dummy user system (can be replaced with DB)
+# Dummy user system
 users = {
     'admin': 'admin123',
     'test': 'test123'
@@ -41,20 +40,20 @@ users = {
 def speechtx(text):
     from message_handler import get_mute
     if get_mute():
-        print("🔇 Mute is ON — skipping speech.")
+        print(" Mute is ON — skipping speech.")
         return
 
     try:
-        local_engine = pyttsx3.init()  # ✅ create engine fresh per call
+        local_engine = pyttsx3.init()  #  create engine fresh per call
         voice = local_engine.getProperty('voices')
         local_engine.setProperty('voice', voice[1].id)
         local_engine.setProperty('rate', 150)
         local_engine.say(text)
         local_engine.runAndWait()
         local_engine.stop()
-        print("🔊 Speech done.")
+        print(" Speech done.")
     except RuntimeError as e:
-        print("❌ Speech engine error:", e)
+        print(" Speech engine error:", e)
 
 
 
@@ -104,7 +103,7 @@ def message():
     response_message = handle_message(user_message, speechtx)
     return jsonify({'response': response_message})
 
-# 🔁 Toggle Model API (for UI switch)
+#  Toggle Model API (for UI switch)
 @app.route('/api/switch_model', methods=['POST'])
 def switch_model():
     try:
