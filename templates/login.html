@@ -2,75 +2,84 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login to ZAX</title>
+    <title>ZAX Login</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <style>
         body {
+            margin: 0;
+            height: 100vh;
+            font-family: sans-serif;
+            background: url('https://images.unsplash.com/photo-1607706189992-eae578626c5d') no-repeat center center;
+            background-size: cover;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background-image: url('https://images.unsplash.com/photo-1607706189992-eae578626c5d');
-            background-size: cover;
-            background-position: center;
-            margin: 0;
-            font-family: Arial, sans-serif;
         }
 
-        .login-container {
-            background: rgba(255, 255, 255, 0.8);
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+        .login-box {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px 30px;
+            border-radius: 30px;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
             text-align: center;
-            width: 350px;
+            width: 420px;
+            /* height: 400px; */
         }
 
-        .login-container h2 {
+        .login-box h2 {
             margin-bottom: 20px;
-            color: #333;
+            color: #444;
         }
 
-        .login-container input[type="text"],
-        .login-container input[type="password"] {
+        .login-box input {
             width: 90%;
             padding: 10px;
             margin: 10px 0;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            outline: none;
-            font-size: 16px;
+            border-radius: 6px;
+            border: 2px solid #bbb;
+            font-size: 15px;
         }
 
-        .login-container button {
+        .login-box button {
             width: 100%;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
+            padding: 15px;
+            background: #3ac55a;
+            color: #fff;
             border: none;
-            border-radius: 8px;
-            font-size: 18px;
+            border-radius: 6px;
+            font-size: 16px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
         }
 
-        .login-container button:hover {
-            background-color: #45a049;
+        .login-box button:hover {
+            background: #219150;
         }
 
+        .login-box a {
+            display: inline-block;
+            margin-top: 15px;
+            color: #333;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .login-box a:hover {
+            text-decoration: underline;
+        }
+       
     </style>
 </head>
 <body>
-    <div class="login-container">
+
+    <div class="login-box">
         <h2>Welcome to ZAX</h2>
         <form method="POST" action="{{ url_for('login') }}">
             <input type="text" name="username" placeholder="Username" required><br>
             <input type="password" name="password" placeholder="Password" required><br>
             <button type="submit">Login</button>
         </form>
-        <br>
-        <a href="{{ url_for('signup') }}">Don't have an account? Sign Up</a>
-
+        <a href="{{ url_for('signup') }}">Don't have an account? Sign up</a>
     </div>
+
 </body>
 </html>

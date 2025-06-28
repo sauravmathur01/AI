@@ -10,6 +10,139 @@ import requests
 import time
 import wikipedia
 import pyttsx3
+import json
+import threading
+import pyttsx3
+from dotenv import load_dotenv
+from transformers import pipeline, Conversation
+import wikipedia
+
+# === Load environment variables ===
+load_dotenv()
+HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
+
+# === Load default settings ===
+SETTINGS_FILE = "settings.json"
+
+def load_settings():
+    try:
+        with open(SETTINGS_FILE, "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return {"mute": False, "use_huggingface": True}
+
+def save_settings(settings):
+    with open(SETTINGS_FILE, "w") as f:
+        json.dump(settings, f, indent=4)
+
+# === Global settings state ===
+settings = load_settings()
+
+# === Helper: Async Text-to-Speech ===
+def speak_async(text):
+    if get_mute():
+        print("🔇 Mute is ON, skipping speech")
+        return
+
+    def tts_worker():
+        try:
+            engine = pyttsx3.init()
+            engine.setProperty('rate', 150)
+            engine.setProperty('voice', engine.getProperty('voices')[1].id)
+            engine.say(text)
+            engine.runAndWait()
+        except RuntimeError as e:
+            print("❌ TTS Error:", e)
+
+    threading.Thread(target=tts_worker).start()
+
+# === Mute and Knowledge Mode Handlers ===
+def get_mute():
+    return settings.get("mute", False)
+
+def set_mute(value: bool):
+    settings["mute"] = value
+    save_settings(settings)
+
+def set_knowledge_mode(value: bool):
+    settings["use_huggingface"] = value
+    save_settings(settings)
+
+# === Custom NLP Logic ===
+def extract_after_keyword(text, keyword):
+    import re
+    match = re.search(f"{keyword}\\s*(.*)", text, re.IGNORECASE)
+    return match.group(1).strip().replace(".", "") if match else None
+
+# === Response Dispatcher ===
+def handle_message(user_message: str, speak_fn=None) -> str:
+    user_prompt = user_message.lower().strip()
+
+    # Basic Responses
+    if "hello" in user_prompt:
+        return speak_and_return("Hello! How can I help you today?", speak_fn)
+
+    if "your name" in user_prompt:
+        return speak_and_return("I'm ZAX, your AI assistant!", speak_fn)
+
+    if "good morning" in user_prompt:
+        return speak_and_return("Good morning! Have a great day!", speak_fn)
+
+    if "good night" in user_prompt:
+        return speak_and_return("Good night. Sweet dreams!", speak_fn)
+
+    # Name & Mood Extraction
+    if "my name is" in user_prompt:
+        name = extract_after_keyword(user_message, "my name is")
+        if name:
+            return speak_and_return(f"Nice to meet you, {name}!", speak_fn)
+
+    if "feeling" in user_prompt:
+        mood = extract_after_keyword(user_message, "feeling")
+        if mood:
+            return speak_and_return(f"I'm here for you. You said you're feeling {mood}.", speak_fn)
+
+    # Wikipedia Mode
+    if settings.get("use_huggingface") is False:
+        return get_wikipedia_summary(user_prompt, speak_fn)
+
+    # HuggingFace Conversational Model
+    return get_huggingface_response(user_prompt, speak_fn)
+
+# === HuggingFace Chatbot ===
+def get_huggingface_response(prompt, speak_fn=None):
+    try:
+        chatbot = pipeline("conversational", model="microsoft/DialoGPT-medium")
+        conversation = Conversation(prompt)
+        response = chatbot(conversation)
+        reply = str(response.generated_responses[-1])
+        if speak_fn:
+            speak_fn(reply)
+        return reply
+    except Exception as e:
+        print("⚠️ HF model failed, switching to Wikipedia fallback:", e)
+        return get_wikipedia_summary(prompt, speak_fn)
+
+# === Wikipedia Fallback ===
+def get_wikipedia_summary(query, speak_fn=None):
+    try:
+        summary = wikipedia.summary(query, sentences=2)
+        if speak_fn:
+            speak_fn(summary)
+        return summary
+    except Exception as e:
+        print("⚠️ Wikipedia error:", e)
+        fallback = "Sorry, I couldn't find anything relevant right now."
+        if speak_fn:
+            speak_fn(fallback)
+        return fallback
+
+# === Combined Speak + Return Shortcut ===
+def speak_and_return(msg: str, speak_fn=None) -> str:
+    if speak_fn:
+        speak_fn(msg)
+    return msg
+
 import queue
 import threading
 from dotenv import load_dotenv

@@ -2,74 +2,82 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Sign Up for ZAX</title>
+    <title>Sign Up | ZAX</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <style>
         body {
+            margin: 0;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background-image: url('https://images.unsplash.com/photo-1607706189992-eae578626c5d');
+            background: url('https://images.unsplash.com/photo-1607706189992-eae578626c5d') no-repeat center center;
             background-size: cover;
-            background-position: center;
-            margin: 0;
-            font-family: Arial, sans-serif;
+            font-family: sans-serif;
         }
 
-        .signup-container {
-            background: rgba(255, 255, 255, 0.8);
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+        .signup-box {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 40px 30px;
+            border-radius: 30px;
+            width: 420px;
             text-align: center;
-            width: 350px;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
         }
 
-        .signup-container h2 {
-            margin-bottom: 20px;
+        .signup-box h2 {
             color: #333;
+            margin-bottom: 20px;
         }
 
-        .signup-container input[type="text"],
-        .signup-container input[type="password"] {
+        .signup-box input {
             width: 90%;
             padding: 10px;
             margin: 10px 0;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            outline: none;
-            font-size: 16px;
+            border-radius: 6px;
+            border: 1px solid #bbb;
+            font-size: 15px;
         }
 
-        .signup-container button {
+        .signup-box button {
             width: 100%;
-            padding: 10px;
-            background-color: #007BFF;
-            color: white;
+            padding: 15px;
+            background: #007BFF;
+            color: #fff;
             border: none;
-            border-radius: 8px;
-            font-size: 18px;
+            border-radius: 6px;
+            font-size: 16px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
         }
 
-        .signup-container button:hover {
-            background-color: #0056b3;
+        .signup-box button:hover {
+            background: #0056b3;
         }
 
+        .signup-box a {
+            display: inline-block;
+            margin-top: 15px;
+            color: #222;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .signup-box a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
-    <div class="signup-container">
-        <h2>Create an Account</h2>
+
+    <div class="signup-box">
+        <h2>Create Account</h2>
         <form method="POST" action="{{ url_for('signup') }}">
-            <input type="text" name="username" placeholder="Choose Username" required><br>
-            <input type="password" name="password" placeholder="Choose Password" required><br>
+            <input type="text" name="username" placeholder="Username" required><br>
+            <input type="password" name="password" placeholder="Password" required><br>
             <button type="submit">Sign Up</button>
         </form>
-        <br>
-        <a href="{{ url_for('login') }}">Already have an account? Login</a>
+        <a href="{{ url_for('login') }}">Already registered? Log in</a>
     </div>
+
 </body>
 </html>
