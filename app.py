@@ -99,9 +99,20 @@ def home():
 def message():
     if 'user' not in session:
         return jsonify({'response': 'Unauthorized! Please login first.'}), 401
-    user_message = request.json['message']
+
+    if not request.is_json:
+        return jsonify({'error': 'Content-Type must be application/json'}), 415
+
+    data = request.get_json()
+
+    if data is None or 'message' not in data:
+        return jsonify({'error': 'Invalid or missing JSON data'}), 400
+
+    user_message = data['message']
     response_message = handle_message(user_message, speechtx)
+    
     return jsonify({'response': response_message})
+
 
 #  Toggle Model API (for UI switch)
 @app.route('/api/switch_model', methods=['POST'])
@@ -122,9 +133,18 @@ from message_handler import set_knowledge_mode
 
 @app.route('/api/toggle_knowledge', methods=['POST'])
 def toggle_knowledge():
-    is_on = request.json.get('on', False)
+    if not request.is_json:
+        return jsonify({'error': 'Content-Type must be application/json'}), 415
+
+    data = request.get_json()
+    if data is None:
+        return jsonify({'error': 'Invalid or missing JSON body'}), 400
+
+    is_on = data.get('on', False)
     set_knowledge_mode(is_on)
+    
     return jsonify({'knowledge_mode': is_on})
+
 # @app.route('/api/stop_speech', methods=['POST'])
 # def stop_speech():
 #     from message_handler import engine
